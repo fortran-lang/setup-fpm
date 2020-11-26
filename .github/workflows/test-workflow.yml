@@ -1,0 +1,32 @@
+on: [push]
+
+jobs:
+  Test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        use-bootstrap: [false, true]
+        fpm-version: ['v0.1.0']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: fpm-setup
+        uses: ./ # Uses action in the root directory
+        with:
+          fpm-version: ${{ matrix.fpm-version }}
+          use-bootstrap: ${{ matrix.use-bootstrap }}
+
+      - name: test fpm
+        run: fpm --help
+
+      - name: Shell check (windows)
+        if: contains(matrix.os, 'windows')
+        run: |
+          echo $ENV:PATH
+          cmd /c where fpm
+          fpm --help
+          cmd /c fpm --help
