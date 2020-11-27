@@ -1,5 +1,8 @@
 name: 'Setup fpm'
 description: 'Setup the Fortran Package Manager for use in Github actions CI'
+branding:
+  color: purple
+  icon: package
 inputs:
   use-bootstrap:
     description: 'Whether to use the bootstrap implementation of fpm'
