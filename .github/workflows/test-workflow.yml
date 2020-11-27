@@ -22,11 +22,3 @@ jobs:
 
       - name: test fpm
         run: fpm --help
-
-      - name: Shell check (windows)
-        if: contains(matrix.os, 'windows')
-        run: |
-          echo $ENV:PATH
-          cmd /c where fpm
-          fpm --help
-          cmd /c fpm --help

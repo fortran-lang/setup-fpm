@@ -50,7 +50,15 @@ async function main(){
     }
 
     // Rename to 'fpm'
-    await io.mv(fpmPath, downloadDir + '/' + 'fpm');
+    if (process.platform === 'win32') {
+      
+      await io.mv(fpmPath, downloadDir + '/' + 'fpm.exe');
+
+    } else {
+      
+      await io.mv(fpmPath, downloadDir + '/' + 'fpm');
+
+    }
     
     // Add to path
     core.addPath( downloadDir );
