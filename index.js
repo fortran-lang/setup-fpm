@@ -3,6 +3,7 @@ const tc = require('@actions/tool-cache');
 const io = require('@actions/io');
 const exec = require('@actions/exec');
 const path = require('path');
+const github = require('@actions/github');
 
 // Main entry function
 //
@@ -11,14 +12,35 @@ async function main(){
   try {
 
     // Get inputs
+    const token = core.getInput('github-token');
+
     const useBootstrap = core.getInput('use-bootstrap').toLowerCase() === 'true';
     console.log(`use-boostrap: ${useBootstrap}`);
 
-    const fpmVersion = core.getInput('fpm-version');
+    fpmVersion = core.getInput('fpm-version');
     console.log(`fpm-version: ${fpmVersion}`);
 
     const fpmRepo = core.getInput('fpm-repository');
     console.log(`fpm-repository: ${fpmRepo}`);
+
+    // Get latest version if requested
+    if (fpmVersion === 'latest'){
+     
+      if (token === 'none') {
+        core.setFailed('To fetch the latest fpm version, please supply a github token. Alternatively you can specify the fpm release version manually.');
+      }
+
+      try {
+
+        fpmVersion = await getLatestReleaseVersion(token);
+
+      } catch (error) {
+
+        core.setFailed('Error while querying the latest fpm release version - please check your github token.');
+
+      }
+
+    }
 
     // Build download path
     const fetchPath = fpmRepo + '/releases/download/' + fpmVersion + '/';
@@ -109,6 +131,20 @@ function getFPMFilename(useBootstrap,fpmVersion,platform){
   }
 
   return filename;
+
+}
+
+// Query github API to find the tag for the latest release
+//
+async function getLatestReleaseVersion(token){
+  
+  const octokit = github.getOctokit(token);
+  
+  const {data: releases} = await octokit.repos.listReleases({
+                            owner:'fortran-lang',
+                            repo:'fpm'});
+
+  return releases[0].tag_name;
 
 }
 
