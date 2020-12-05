@@ -4,6 +4,10 @@ branding:
   color: purple
   icon: package
 inputs:
+  github-token:
+    description: 'API token needed to fetch latest fpm version'
+    required: false
+    default: 'none'
   use-bootstrap:
     description: 'Whether to use the bootstrap implementation of fpm'
     required: false
@@ -11,7 +15,7 @@ inputs:
   fpm-version:
     description: 'The tag of an fpm release'
     required: false
-    default: 'v0.1.0'
+    default: 'latest'
   fpm-repository:
     description: 'Github repository (url) serving fpm releases'
     required: false
