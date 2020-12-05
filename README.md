@@ -9,7 +9,9 @@ __GitHub Action to setup the [Fortran Package Manager](https://github.com/fortra
 ## Usage
 
 ```yaml
-  - uses: lkedward/setup-fpm@v1
+  - uses: lkedward/setup-fpm@v2
+    with:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 This will download the latest `fpm` version to the CI machine and add it to the path.
@@ -23,9 +25,11 @@ __e.g.:__
 
 ## Options
 
-__`use-bootstrap`__ (*optional,default:*`false`) whether to fetch and use the legacy 'bootstrap' implementation
+__`github-token`__ (*only needed if `fpm-version` is `'latest'` or not specified*), an access token used to query the latest version of `fpm`. Set to `${{ secrets.GITHUB_TOKEN }}` to use the existing github actions token.
 
-__`fpm-version`__ (*optional*) the tag corresponding a Github release from which to fetch the `fpm` binary.
-If omitted, the latest `fpm` release at [fortran-lang/fpm](https://github.com/fortran-lang/fpm/releases/latest) will be substituted.
+__`fpm-version`__ (*optional,default:*`'latest'`) the tag corresponding a Github release from which to fetch the `fpm` binary.
+  - If set to `'latest'` (_default_) then the latest `fpm` release at [fortran-lang/fpm](https://github.com/fortran-lang/fpm/releases/latest) will be substituted. `github-token` must be provided if `fpm-version` is `'latest'`.
+
+__`use-bootstrap`__ (*optional,default:*`false`) whether to fetch and use the legacy 'bootstrap' implementation
 
 __`fpm-repository`__ (*optional, default:* `https://github.com/fortran-lang/fpm`) which Github fork to fetch release binaries from.
