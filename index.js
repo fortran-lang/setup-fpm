@@ -14,8 +14,8 @@ async function main(){
     // Get inputs
     const token = core.getInput('github-token');
 
-    const useBootstrap = core.getInput('use-bootstrap').toLowerCase() === 'true';
-    console.log(`use-boostrap: ${useBootstrap}`);
+    const useHaskell = core.getInput('use-haskell').toLowerCase() === 'true';
+    console.log(`use-haskell: ${useHaskell}`);
 
     fpmVersion = core.getInput('fpm-version');
     console.log(`fpm-version: ${fpmVersion}`);
@@ -44,7 +44,7 @@ async function main(){
 
     // Build download path
     const fetchPath = fpmRepo + '/releases/download/' + fpmVersion + '/';
-    const filename = getFPMFilename(useBootstrap,fpmVersion,process.platform);
+    const filename = getFPMFilename(useHaskell,fpmVersion,process.platform);
 
     console.log(`This platform is ${process.platform}`);
     console.log(`Fetching fpm from ${fetchPath}${filename}`)
@@ -96,21 +96,21 @@ async function main(){
 
 // Construct the filename for an fpm release
 //
-//  fpm-[bootstrap-]<version>-<os>-<arch>[.exe]
+//  fpm-[haskell-]<version>-<os>-<arch>[.exe]
 //
-//  <version> is a string of form vX.Y.Z corresponding to a release of fpm
-//  <os> is either 'linux', 'darwin', or 'win32' (as returned by process.platform)
+//  <version> is a string of form X.Y.Z corresponding to a release of fpm
+//  <os> is either 'linux', 'macos', or 'windows'
 //  <arch> here is always 'x86_64'
 //
-function getFPMFilename(useBootstrap,fpmVersion,platform){
+function getFPMFilename(useHaskell,fpmVersion,platform){
 
   filename = 'fpm-';
 
-  if (useBootstrap) {
-    filename += 'bootstrap-';
+  if (useHaskell) {
+    filename += 'haskell-';
   }
 
-  filename += fpmVersion + '-';
+  filename += fpmVersion.replace('v','') + '-';
   
   if (platform === 'linux') {
 
