@@ -19,7 +19,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           fpm-version: ${{ matrix.fpm-version }}
-          use-bootstrap: ${{ matrix.use-bootstrap }}
+          use-haskell: ${{ matrix.use-bootstrap }}
 
       - name: test fpm
         run: fpm --help
