@@ -8,8 +8,8 @@ inputs:
     description: 'API token needed to fetch latest fpm version'
     required: false
     default: 'none'
-  use-bootstrap:
-    description: 'Whether to use the bootstrap implementation of fpm'
+  use-haskell:
+    description: 'Whether to use the legacy Haskell implementation of fpm'
     required: false
     default: false
   fpm-version:
