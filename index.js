@@ -17,7 +17,7 @@ async function main(){
     const useHaskell = core.getInput('use-haskell').toLowerCase() === 'true';
     console.log(`use-haskell: ${useHaskell}`);
 
-    fpmVersion = core.getInput('fpm-version');
+    var fpmVersion = core.getInput('fpm-version');
     console.log(`fpm-version: ${fpmVersion}`);
 
     const fpmRepo = core.getInput('fpm-repository');
@@ -47,7 +47,7 @@ async function main(){
     const filename = getFPMFilename(useHaskell,fpmVersion,process.platform);
 
     console.log(`This platform is ${process.platform}`);
-    console.log(`Fetching fpm from ${fetchPath}${filename}`)
+    console.log(`Fetching fpm from ${fetchPath}${filename}`);
     
     // Download release
     var fpmPath;
@@ -104,7 +104,7 @@ async function main(){
 //
 function getFPMFilename(useHaskell,fpmVersion,platform){
 
-  filename = 'fpm-';
+  var filename = 'fpm-';
 
   if (useHaskell) {
     filename += 'haskell-';
