@@ -14,9 +14,6 @@ async function main(){
     // Get inputs
     const token = core.getInput('github-token');
 
-    const useHaskell = core.getInput('use-haskell').toLowerCase() === 'true';
-    console.log(`use-haskell: ${useHaskell}`);
-
     var fpmVersion = core.getInput('fpm-version');
     console.log(`fpm-version: ${fpmVersion}`);
 
@@ -44,7 +41,7 @@ async function main(){
 
     // Build download path
     const fetchPath = fpmRepo + '/releases/download/' + fpmVersion + '/';
-    const filename = getFPMFilename(useHaskell,fpmVersion,process.platform);
+    const filename = getFPMFilename(fpmVersion,process.platform);
 
     console.log(`This platform is ${process.platform}`);
     console.log(`Fetching fpm from ${fetchPath}${filename}`);
@@ -96,19 +93,15 @@ async function main(){
 
 // Construct the filename for an fpm release
 //
-//  fpm-[haskell-]<version>-<os>-<arch>[.exe]
+//  fpm-<version>-<os>-<arch>[.exe]
 //
 //  <version> is a string of form X.Y.Z corresponding to a release of fpm
 //  <os> is either 'linux', 'macos', or 'windows'
 //  <arch> here is always 'x86_64'
 //
-function getFPMFilename(useHaskell,fpmVersion,platform){
+function getFPMFilename(fpmVersion,platform){
 
   var filename = 'fpm-';
-
-  if (useHaskell) {
-    filename += 'haskell-';
-  }
 
   filename += fpmVersion.replace('v','') + '-';
 

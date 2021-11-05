@@ -7,7 +7,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        use-bootstrap: [false, true]
         fpm-version: ['v0.1.0','v0.1.1','latest']
 
     steps:
@@ -19,7 +18,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           fpm-version: ${{ matrix.fpm-version }}
-          use-haskell: ${{ matrix.use-bootstrap }}
 
       - name: test fpm
         run: fpm --help
