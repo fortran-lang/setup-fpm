@@ -14,9 +14,6 @@ async function main(){
     // Get inputs
     const token = core.getInput('github-token');
 
-    const useHaskell = core.getInput('use-haskell').toLowerCase() === 'true';
-    console.log(`use-haskell: ${useHaskell}`);
-
     var fpmVersion = core.getInput('fpm-version');
     console.log(`fpm-version: ${fpmVersion}`);
 
@@ -25,7 +22,7 @@ async function main(){
 
     // Get latest version if requested
     if (fpmVersion === 'latest'){
-     
+
       if (token === 'none') {
         core.setFailed('To fetch the latest fpm version, please supply a github token. Alternatively you can specify the fpm release version manually.');
       }
@@ -44,74 +41,70 @@ async function main(){
 
     // Build download path
     const fetchPath = fpmRepo + '/releases/download/' + fpmVersion + '/';
-    const filename = getFPMFilename(useHaskell,fpmVersion,process.platform);
+    const filename = getFPMFilename(fpmVersion,process.platform);
 
     console.log(`This platform is ${process.platform}`);
     console.log(`Fetching fpm from ${fetchPath}${filename}`);
-    
+
     // Download release
     var fpmPath;
     try {
-    
+
       fpmPath = await tc.downloadTool(fetchPath+filename);
-    
+
     } catch (error) {
-      
+
       core.setFailed(`Error while trying to fetch fpm - please check that a version exists at the above release url.`);
-    
+
     }
 
     console.log(fpmPath);
     const downloadDir = path.dirname(fpmPath);
-    
+
     // Add executable flag on unix
     if (process.platform === 'linux' || process.platform === 'darwin'){
-      
+
       await exec.exec('chmod u+x '+fpmPath);
 
     }
 
     // Rename to 'fpm'
     if (process.platform === 'win32') {
-      
+
       await io.mv(fpmPath, downloadDir + '/' + 'fpm.exe');
 
     } else {
-      
+
       await io.mv(fpmPath, downloadDir + '/' + 'fpm');
 
     }
-    
+
     // Add to path
     core.addPath( downloadDir );
     console.log(`fpm added to path at ${downloadDir}`);
-    
+
   } catch (error) {
 
     core.setFailed(error.message);
-    
+
   }
 };
 
 
 // Construct the filename for an fpm release
 //
-//  fpm-[haskell-]<version>-<os>-<arch>[.exe]
+//  fpm-<version>-<os>-<arch>[.exe]
 //
 //  <version> is a string of form X.Y.Z corresponding to a release of fpm
 //  <os> is either 'linux', 'macos', or 'windows'
 //  <arch> here is always 'x86_64'
 //
-function getFPMFilename(useHaskell,fpmVersion,platform){
+function getFPMFilename(fpmVersion,platform){
 
   var filename = 'fpm-';
 
-  if (useHaskell) {
-    filename += 'haskell-';
-  }
-
   filename += fpmVersion.replace('v','') + '-';
-  
+
   if (platform === 'linux') {
 
     filename += 'linux-x86_64';
@@ -137,14 +130,14 @@ function getFPMFilename(useHaskell,fpmVersion,platform){
 // Query github API to find the tag for the latest release
 //
 async function getLatestReleaseVersion(token){
-  
-  const octokit = github.getOctokit(token);
-  
-  const {data: releases} = await octokit.repos.listReleases({
-                            owner:'fortran-lang',
-                            repo:'fpm'});
 
-  return releases[0].tag_name;
+  const octokit = github.getOctokit(token);
+
+  const {data: latest} = await octokit.request('GET /repos/{owner}/{repo}/releases/latest', {
+                            owner: 'fortran-lang',
+                            repo: 'fpm'});
+
+  return latest.tag_name;
 
 }
 
