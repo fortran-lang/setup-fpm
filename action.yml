@@ -17,5 +17,5 @@ inputs:
     required: false
     default: 'https://github.com/fortran-lang/fpm'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'index.js'

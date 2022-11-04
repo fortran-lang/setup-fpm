@@ -9,7 +9,7 @@ __GitHub Action to setup the [Fortran Package Manager](https://github.com/fortra
 ## Usage
 
 ```yaml
-  - uses: fortran-lang/setup-fpm@v4
+  - uses: fortran-lang/setup-fpm@v5
     with:
       github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
