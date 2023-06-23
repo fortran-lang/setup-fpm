@@ -9,26 +9,19 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         fpm-version: ["v0.7.0", "v0.8.0", "latest"]
     env:
-      GCC_V: 10
+      GCC_V: ${{ matrix.fpm-version == 'v0.7.0' && 9 || 10 }} # Install gcc@9 for fpm v0.7.0, otherwise gcc@10
 
     steps:
       - uses: actions/checkout@v3
 
-      # - name: Install compiler 
-      #   if: matrix.os == 'ubuntu-latest'
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt install -y gfortran-${GCC_V}
-      #     sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} 100
-
       - name: Install compiler (macOS)
-        if: matrix.os == 'macos'
+        if: matrix.os == 'macos-latest'
         run: |
           brew install gcc@${GCC_V}
           sudo ln -s $(which gfortran-${GCC_V}) $(dirname $(which gfortran-${GCC_V}))/gfortran
 
       - name: Install compiler (Windows)
-        if: matrix.os == 'windows'
+        if: matrix.os == 'windows-latest'
         uses: msys2/setup-msys2@v2
         with:
           update: true
