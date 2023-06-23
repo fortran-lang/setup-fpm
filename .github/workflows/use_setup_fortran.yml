@@ -32,7 +32,6 @@ jobs:
         uses: ./ # Uses action in the root directory
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          fpm-version: ${{ matrix.fpm-version }}
 
       - name: test fpm
         run: |
