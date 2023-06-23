@@ -14,14 +14,14 @@ jobs:
 
       - uses: awvwgk/setup-fortran@v1
         id: setup-fortran
-        if: ${{ matrix.fpm-version != "v0.7.0" }}
+        if: ${{ matrix.fpm-version != 'v0.7.0' }}
         with:
           compiler: gcc
           version: 10
 
       - uses: awvwgk/setup-fortran@v1
         id: setup-fortran
-        if: ${{ matrix.fpm-version == "v0.7.0" }}
+        if: ${{ matrix.fpm-version == 'v0.7.0' }}
         with:
           compiler: gcc
           version: 9
