@@ -1,4 +1,7 @@
-on: push
+on:
+  push:
+  schedule:
+    - cron: '30 * * */1 *' # At minute 30 in every 1st day of the month
 
 jobs:
   Test:
