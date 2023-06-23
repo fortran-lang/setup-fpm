@@ -1,4 +1,4 @@
-on: [push]
+on: push
 
 jobs:
   Test:
@@ -16,13 +16,13 @@ jobs:
         id: setup-fortran
         with:
           compiler: gcc
-          version: ${{ matrix.fpm-version == 'v0.7.0' && 9 || 10 }}
+          version: ${{ matrix.fpm-version == 'v0.7.0' && 9 || 10 }} # Install gcc@9 for fpm v0.7.0, otherwise gcc@10
 
       - run: ${{ env.FC }} --version
         env:
           FC: ${{ steps.setup-fortran.outputs.fc }}
 
-      - name: fpm-setup
+      - name: setup-fpm
         uses: ./ # Uses action in the root directory
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
