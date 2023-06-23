@@ -10,8 +10,17 @@ jobs:
         fpm-version: ["v0.1.0", "v0.1.1", "latest"]
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+
+      - uses: awvwgk/setup-fortran@v1
+        id: setup-fortran
+        with:
+          compiler: gcc
+          version: 10
+
+      - run: ${{ env.FC }} --version
+        env:
+          FC: ${{ steps.setup-fortran.outputs.fc }}
 
       - name: fpm-setup
         uses: ./ # Uses action in the root directory
