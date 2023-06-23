@@ -7,7 +7,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        fpm-version: ['v0.1.0','v0.1.1','latest']
+        fpm-version: ["v0.1.0", "v0.1.1", "latest"]
 
     steps:
       - name: Checkout
@@ -20,4 +20,6 @@ jobs:
           fpm-version: ${{ matrix.fpm-version }}
 
       - name: test fpm
-        run: fpm --help
+        run: |
+          cd example/hello_world
+          fpm test
