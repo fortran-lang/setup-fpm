@@ -9,8 +9,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        fpm-version: ['v0.8.0', 'v0.9.0', 'latest']
-        node-version: ['20.x']
+        fpm-version: ["v0.8.0", "v0.9.0", "latest"]
+        node-version: ["20.x"]
 
     steps:
       - name: Checkout
