@@ -3,8 +3,7 @@
 __GitHub Action to setup the [Fortran Package Manager](https://github.com/fortran-lang/fpm) on Ubuntu, MacOS and Windows.__
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Github actions](https://github.com/fortran-lang/setup-fpm/workflows/.github/workflows/test-workflow.yml/badge.svg?event=push)](https://github.com/fortran-lang/setup-fpm/actions)
-
+[![.github/workflows/test-workflow.yml](https://github.com/fortran-lang/setup-fpm/actions/workflows/test-workflow.yml/badge.svg)](https://github.com/fortran-lang/setup-fpm/actions/workflows/test-workflow.yml)
 
 ## Usage
 
