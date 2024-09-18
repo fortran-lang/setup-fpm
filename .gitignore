@@ -33,7 +33,6 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
 jspm_packages/
 
 # TypeScript v1.x
@@ -67,7 +66,7 @@ jspm_packages/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+./dist/
 
 # vuepress build output
 .vuepress/dist
