@@ -35,5 +35,12 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           fpm-version: ${{ matrix.fpm-version }}
 
-      - name: test fpm
-        run: fpm --help
+      - name: Checkout the fpm repo
+        if: matrix.fpm-version == 'latest'
+        uses: actions/checkout@v4
+        with:
+          repository: fortran-lang/fpm
+
+      - name: Check that all the fpm tests pass
+        if: matrix.fpm-version == 'latest'
+        run: fpm test
