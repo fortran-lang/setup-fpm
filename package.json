@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LKedward/setup-fpm.git"
+    "url": "git+https://github.com/fortran-lang/setup-fpm.git"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/LKedward/setup-fpm/issues"
+    "url": "https://github.com/fortran-lang/setup-fpm/issues"
   },
-  "homepage": "https://github.com/LKedward/setup-fpm#readme",
+  "homepage": "https://github.com/fortran-lang/setup-fpm#readme",
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@actions/exec": "^1.0.4",
