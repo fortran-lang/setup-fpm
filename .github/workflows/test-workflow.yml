@@ -46,7 +46,7 @@ jobs:
         uses: fortran-lang/setup-fortran@v1.6.1
         with:
           compiler: gcc
-          compiler-version: 13
+          version: 13
 
       - name: Check that all the fpm tests pass
         if: matrix.fpm-version == 'latest'
