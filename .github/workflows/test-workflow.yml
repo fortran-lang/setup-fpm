@@ -43,7 +43,7 @@ jobs:
 
       - name: Setup the Fortran compiler
         if: matrix.fpm-version == 'latest'
-        uses: fortran-lang/setup-fortran@v1.6.1
+        uses: fortran-lang/setup-fortran@v1.6.2
         with:
           compiler: gcc
           version: 13
