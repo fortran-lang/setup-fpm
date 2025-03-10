@@ -44,13 +44,13 @@ async function main(){
     const filename = getFPMFilename(fpmVersion,process.platform);
 
     console.log(`This platform is ${process.platform}`);    
+    console.log(`Fetching fpm from ${fetchPath}${filename}`);
 
     // Download release
     var fpmPath;
     try {
         
-      // Try downloading the file without the compiler suffix
-      console.log(`Fetching fpm from ${fetchPath}${filename}`);
+      // Try downloading the file without the compiler suffix      
       const filename = getFPMFilename(fpmVersion, process.platform);
       fpmPath = await tc.downloadTool(fetchPath + filename);
 
