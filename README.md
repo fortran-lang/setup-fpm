@@ -33,7 +33,7 @@ __`fpm-repository`__ (*optional, default:* `https://github.com/fortran-lang/fpm`
 
 ### Default `fpm-version` for Each Release
 
-Starting with `v7`, `setup-fpm` is pinpointed to `fpm` version `0.11.0` to ensure compatibility with newer features and changes. 
+Starting with `v7`, `setup-fpm` is pinpointed to `fpm` version `v0.11.0` to ensure compatibility with newer features and changes. 
 Previous versions default to the latest stable release, which is fetched automatically when `fpm-version` is set to `'latest'`.
 
 | Release Version | Default `fpm-version` |
@@ -48,3 +48,4 @@ Previous versions default to the latest stable release, which is fetched automat
 | v6.1.0          | latest                |
 | v7              | 0.11.0                |
 
+Note: `fpm` changed asset naming convention starting version `v0.11.0`. So, the `latest` option will not work anymore with versions of `setup-fpm` prior to `v7`. 
