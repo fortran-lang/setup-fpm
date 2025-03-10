@@ -64,7 +64,7 @@ async function main(){
       for (const compiler of compilers) {
             
         // Generate the filename with the compiler suffix
-        const filenameWithSuffix = getFPMFilename(fpmVersion, process.platform, compilers);
+        const filenameWithSuffix = getFPMFilename(fpmVersion, process.platform, compiler);
         console.log(`Trying to fetch compiler-built fpm: ${filenameWithSuffix}`);
 
         try {
