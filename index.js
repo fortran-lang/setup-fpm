@@ -43,19 +43,43 @@ async function main(){
     const fetchPath = fpmRepo + '/releases/download/' + fpmVersion + '/';
     const filename = getFPMFilename(fpmVersion,process.platform);
 
-    console.log(`This platform is ${process.platform}`);
-    console.log(`Fetching fpm from ${fetchPath}${filename}`);
+    console.log(`This platform is ${process.platform}`);    
 
     // Download release
     var fpmPath;
     try {
-
-      fpmPath = await tc.downloadTool(fetchPath+filename);
+        
+      // Try downloading the file without the compiler suffix
+      console.log(`Fetching fpm from ${fetchPath}${filename}`);
+      const filename = getFPMFilename(fpmVersion, process.platform);
+      fpmPath = await tc.downloadTool(fetchPath + filename);
 
     } catch (error) {
+        
+      // If download fails, try adding compiler suffixes
+      const compilers = ['gcc-10', 'gcc-11', 'gcc-12', 'gcc-13', 'gcc-14'];
+      
+      let success = false;
+      
+      for (const compiler of compilers) {
+            
+        // Generate the filename with the compiler suffix
+        const filenameWithSuffix = getFPMFilename(fpmVersion, process.platform, compilers);
+        console.log(`Trying to fetch compiler-built fpm: ${filenameWithSuffix}`);
 
-      core.setFailed(`Error while trying to fetch fpm - please check that a version exists at the above release url.`);
+        try {
+          fpmPath = await tc.downloadTool(fetchPath + filenameWithSuffix);
+          success = true;
+          break;  // If download is successful, break out of the loop
+        } catch (error) {
+          console.log(`  -> Failed to download ${filenameWithSuffix}`);
+        }
+        
+      }
 
+      if (!success) {
+        core.setFailed(`Error while trying to fetch fpm - please check that a version exists at the above release url.`);
+      }
     }
 
     console.log(fpmPath);
@@ -90,42 +114,41 @@ async function main(){
   }
 };
 
-
 // Construct the filename for an fpm release
 //
-//  fpm-<version>-<os>-<arch>[.exe]
+//  fpm-<version>-<os>-<arch>[-<compiler>][.exe]
 //
 //  <version> is a string of form X.Y.Z corresponding to a release of fpm
 //  <os> is either 'linux', 'macos', or 'windows'
 //  <arch> here is always 'x86_64'
+//  <compiler> is an optional string like '-gcc-12'
 //
-function getFPMFilename(fpmVersion,platform){
-
+function getFPMFilename(fpmVersion, platform, compiler = '') {
   var filename = 'fpm-';
+  
+  // Remove the leading 'v' if it exists
+  filename += fpmVersion.replace('v', '') + '-';
 
-  filename += fpmVersion.replace('v','') + '-';
-
+  // Add the platform and architecture
   if (platform === 'linux') {
-
     filename += 'linux-x86_64';
-
   } else if (platform === 'darwin') {
-
     filename += 'macos-x86_64';
-
   } else if (platform === 'win32') {
-
-    filename += 'windows-x86_64.exe';
-
+    filename += 'windows-x86_64';
   } else {
-
     core.setFailed('Unknown platform');
-
   }
 
-  return filename;
+  // If a compiler is provided, append it as a suffix 
+  if (compiler) filename += `-${compiler}`; 
+  
+  // Add the '.exe' suffix for Windows 
+  if (platform === 'win32') filename += '.exe'; 
 
+  return filename;
 }
+
 
 // Query github API to find the tag for the latest release
 //
