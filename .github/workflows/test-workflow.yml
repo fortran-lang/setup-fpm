@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -41,7 +41,7 @@ jobs:
 
       - name: Checkout the fpm repo
         if: matrix.fpm-version == 'latest'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: fortran-lang/fpm
 
