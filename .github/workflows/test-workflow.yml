@@ -52,3 +52,43 @@ jobs:
       - name: Check that all the fpm tests pass
         if: matrix.fpm-version == 'latest'
         run: fpm test
+
+  # There is no linux-arm64 release asset, so every download in the action fails
+  # on this runner and only the build-from-source fallback can install fpm. Kept
+  # as a separate job with one version, because each run compiles fpm. See #60.
+  Test-linux-arm64:
+    runs-on: ubuntu-24.04-arm
+    strategy:
+      fail-fast: false
+      matrix:
+        fpm-version: ["v0.13.0"]
+        node-version: ["24.x"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install gfortran
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gfortran-13
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: fpm-setup
+        uses: ./ # Uses action in the root directory
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          fpm-version: ${{ matrix.fpm-version }}
+
+      - name: Check that fpm runs
+        run: |
+          fpm --version
+          fpm new demo --app
+          cd demo && fpm run

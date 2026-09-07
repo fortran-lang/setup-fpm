@@ -83,9 +83,13 @@ async function main(){
       }
 
       if (!success) {
-        // On macOS ARM64, fall back to building from source
-        if (process.platform === 'darwin' && arch === 'arm64') {
-          console.log('No pre-built ARM64 binary found, falling back to building from source');
+        // Not every platform and architecture has a pre-built binary: there is
+        // no linux-arm64 release asset, so on those runners every download above
+        // fails. install.sh makes no assumption about the platform beyond a
+        // POSIX shell and a Fortran compiler, so the same fallback that serves
+        // macOS ARM64 serves Linux ARM64 too. See issue #60.
+        if ((process.platform === 'darwin' || process.platform === 'linux') && arch === 'arm64') {
+          console.log(`No pre-built ${process.platform}-${arch} binary found, falling back to building from source`);
 
           // For older versions without working install.sh, we can't build from source
           const versionNum = fpmVersion.replace('v', '');
@@ -94,7 +98,7 @@ async function main(){
 
           if (isOldVersion) {
             core.setFailed(
-              `Building fpm ${fpmVersion} from source is not supported on macOS ARM64.\n` +
+              `Building fpm ${fpmVersion} from source is not supported on ${process.platform} ${arch}.\n` +
               'Please use fpm v0.9.0 or later, which has a working install.sh script.\n' +
               'For example, set fpm-version to "v0.9.0", "v0.10.1" or "latest".'
             );
@@ -105,7 +109,11 @@ async function main(){
           return;
         }
 
-        core.setFailed(`Error while trying to fetch fpm - please check that a version exists at the above release url.`);
+        // Without this return, execution carried on to path.dirname(fpmPath)
+        // with fpmPath still undefined, and the real reason was buried under a
+        // second, unrelated error: 'The "path" argument must be of type string'.
+        core.setFailed(`Error while trying to fetch fpm ${fpmVersion} for ${process.platform}-${arch} - no release asset was found for this platform and it could not be built from source.`);
+        return;
       }
     }
 
@@ -203,7 +211,8 @@ async function getLatestReleaseVersion(token){
 
 
 // Install fpm from source using the install.sh script
-// This is used on macOS ARM64 where pre-built binaries are not available
+// This is used on the platforms where pre-built binaries are not available,
+// currently macOS ARM64 and Linux ARM64
 //
 async function installFromSource(fpmVersion, fpmRepo){
 
@@ -238,11 +247,14 @@ async function installFromSource(fpmVersion, fpmRepo){
     }
 
     if (!foundVersioned && !foundGfortran) {
+      const installHint = process.platform === 'darwin'
+        ? '    run: brew install gcc@13\n'
+        : '    run: sudo apt-get install -y gfortran-13\n';
       core.setFailed(
-        'gfortran is required to build fpm from source on macOS ARM64.\n' +
+        `gfortran is required to build fpm from source on ${process.platform} ${os.arch()}.\n` +
         'Please install gcc version 10-13 before running this action, for example:\n' +
         '  - name: Install gfortran\n' +
-        '    run: brew install gcc@13\n' +
+        installHint +
         'Or use fortran-lang/setup-fortran to install a Fortran compiler.'
       );
       return;
