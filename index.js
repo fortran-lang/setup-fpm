@@ -83,29 +83,29 @@ async function main(){
       }
 
       if (!success) {
-        // On macOS ARM64, fall back to building from source
-        if (process.platform === 'darwin' && arch === 'arm64') {
-          console.log('No pre-built ARM64 binary found, falling back to building from source');
+        // Every download above failed, so it is build from source or nothing --
+        // there is no third outcome where the action succeeds. Don't gate that on
+        // a platform list: install.sh assumes only a POSIX shell and a Fortran
+        // compiler, and hard-coding which platforms lack a release asset means
+        // this needs editing again the next time that set changes. See issue #60.
+        console.log(`No pre-built ${process.platform}-${arch} binary found, falling back to building from source`);
 
-          // For older versions without working install.sh, we can't build from source
-          const versionNum = fpmVersion.replace('v', '');
-          const versionParts = versionNum.split('.').map(Number);
-          const isOldVersion = versionParts[0] === 0 && versionParts[1] < 9;
+        // For older versions without working install.sh, we can't build from source
+        const versionNum = fpmVersion.replace('v', '');
+        const versionParts = versionNum.split('.').map(Number);
+        const isOldVersion = versionParts[0] === 0 && versionParts[1] < 9;
 
-          if (isOldVersion) {
-            core.setFailed(
-              `Building fpm ${fpmVersion} from source is not supported on macOS ARM64.\n` +
-              'Please use fpm v0.9.0 or later, which has a working install.sh script.\n' +
-              'For example, set fpm-version to "v0.9.0", "v0.10.1" or "latest".'
-            );
-            return;
-          }
-
-          await installFromSource(fpmVersion, fpmRepo);
+        if (isOldVersion) {
+          core.setFailed(
+            `Building fpm ${fpmVersion} from source is not supported on ${process.platform} ${arch}.\n` +
+            'Please use fpm v0.9.0 or later, which has a working install.sh script.\n' +
+            'For example, set fpm-version to "v0.9.0", "v0.10.1" or "latest".'
+          );
           return;
         }
 
-        core.setFailed(`Error while trying to fetch fpm - please check that a version exists at the above release url.`);
+        await installFromSource(fpmVersion, fpmRepo);
+        return;
       }
     }
 
@@ -203,7 +203,8 @@ async function getLatestReleaseVersion(token){
 
 
 // Install fpm from source using the install.sh script
-// This is used on macOS ARM64 where pre-built binaries are not available
+// This is used on the platforms where pre-built binaries are not available,
+// currently macOS ARM64 and Linux ARM64
 //
 async function installFromSource(fpmVersion, fpmRepo){
 
@@ -238,11 +239,14 @@ async function installFromSource(fpmVersion, fpmRepo){
     }
 
     if (!foundVersioned && !foundGfortran) {
+      const installHint = process.platform === 'darwin'
+        ? '    run: brew install gcc@13\n'
+        : '    run: sudo apt-get install -y gfortran-13\n';
       core.setFailed(
-        'gfortran is required to build fpm from source on macOS ARM64.\n' +
+        `gfortran is required to build fpm from source on ${process.platform} ${os.arch()}.\n` +
         'Please install gcc version 10-13 before running this action, for example:\n' +
         '  - name: Install gfortran\n' +
-        '    run: brew install gcc@13\n' +
+        installHint +
         'Or use fortran-lang/setup-fortran to install a Fortran compiler.'
       );
       return;
