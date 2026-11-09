@@ -8,7 +8,7 @@ __GitHub Action to setup the [Fortran Package Manager](https://github.com/fortra
 ## Usage
 
 ```yaml
-  - uses: fortran-lang/setup-fpm@v10
+  - uses: fortran-lang/setup-fpm@v11
     with:
       github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -51,5 +51,6 @@ Previous versions default to the latest stable release, which is fetched automat
 | v8              | 0.11.0                |
 | v9              | 0.12.0                |
 | v10             | 0.13.0                |
+| v11             | 0.13.0                |
 
 Note: `fpm` changed asset naming convention starting version `v0.11.0`. So, the `latest` option will not work anymore with versions of `setup-fpm` prior to `v7`. 
