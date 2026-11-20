@@ -8,7 +8,7 @@ __GitHub Action to setup the [Fortran Package Manager](https://github.com/fortra
 ## Usage
 
 ```yaml
-  - uses: fortran-lang/setup-fpm@v11
+  - uses: fortran-lang/setup-fpm@v12
     with:
       github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -34,7 +34,7 @@ __`fpm-repository`__ (*optional, default:* `https://github.com/fortran-lang/fpm`
 
 ### Default `fpm-version` for Each Release
 
-Starting with `v7`, `setup-fpm` is pinpointed to a specific `fpm` version to ensure compatibility with newer features and changes. On `main`, the default is pinned to `v0.14.0`; `v10` and `v11` default to `v0.13.0`. 
+Starting with `v7`, `setup-fpm` is pinpointed to a specific `fpm` version to ensure compatibility with newer features and changes. From `v12`, the default is pinned to `v0.14.0`. 
 Previous versions default to the latest stable release, which is fetched automatically when `fpm-version` is set to `'latest'`.
 
 | Release Version | Default `fpm-version` |
@@ -52,5 +52,6 @@ Previous versions default to the latest stable release, which is fetched automat
 | v9              | 0.12.0                |
 | v10             | 0.13.0                |
 | v11             | 0.13.0                |
+| v12             | 0.14.0                |
 
 Note: `fpm` changed asset naming convention starting version `v0.11.0`. So, the `latest` option will not work anymore with versions of `setup-fpm` prior to `v7`. 
