@@ -11,7 +11,7 @@ inputs:
   fpm-version:
     description: 'The tag of an fpm release'
     required: false
-    default: 'v0.13.0'
+    default: 'v0.14.0'
   fpm-repository:
     description: 'Github repository (url) serving fpm releases'
     required: false
